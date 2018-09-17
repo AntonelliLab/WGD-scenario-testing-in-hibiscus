@@ -43,5 +43,5 @@ rownames(printable_res) <- NULL
 # add weighted AIC
 printable_res <- aicw_calc(printable_res)
 write.csv(x = printable_res, row.names = FALSE, quote = FALSE,
-          file = file.path('results', 'model_results_no_bonus.csv'))
+          file = file.path('results', 'model_results.csv'))
 cat('Done!\n')
