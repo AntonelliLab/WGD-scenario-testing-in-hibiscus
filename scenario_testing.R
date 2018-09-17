@@ -1,26 +1,25 @@
-aicw_calc <- MLEGeneCount2 <- NULL
-
-# Libs
+# Libs ----
+cat('Loading libraries and functions ....', '\n')
+extract_slot <- aicw_calc <- MLEGeneCount2 <- NULL
 suppressMessages(suppressWarnings(library(WGDgc)))
-source('mldgenecount2.R')
+source(file.path('tools', 'mldgenecount2.R'))
+source(file.path('tools', 'other.R'))
 
-# Functions
-extract_slot <- function(model_res, slt_nm) {
-  vapply(X = model_res, FUN = function(x) {
-    x[[slt_nm]]}, FUN.VALUE = numeric(1))
-}
-
+# Data ----
+cat('Importing data ....', '\n')
 # Gene counts
-gene_counts <- read.csv('gene_counts.csv', stringsAsFactors = FALSE)
-
+gene_counts <- read.csv(file.path('data', 'gene_counts.csv'),
+                        stringsAsFactors = FALSE)
 # Tree strings
-trstrs <- readLines('scenario_treestrings.txt')
+trstrs <- readLines(file.path('data', 'scenario_treestrings.txt'))
 trstrs <- strsplit(x = trstrs, split = ' = ')
-trstrs_scenarios <- vapply(X = trstrs, FUN = '[[', i = 1, FUN.VALUE = character(1))
+trstrs_scenarios <- vapply(X = trstrs, FUN = '[[', i = 1,
+                           FUN.VALUE = character(1))
 trstrs <- vapply(X = trstrs, FUN = '[[', i = 2, FUN.VALUE = character(1))
 names(trstrs) <- trstrs_scenarios
 
-# Testing
+# Testing ----
+cat('Running scenario tests ....', '\n')
 model_res <- vector(mode = 'list', length(trstrs))
 names(model_res) <- names(trstrs)
 for (nm in names(trstrs)) {
@@ -30,9 +29,11 @@ for (nm in names(trstrs)) {
                        conditioning = "twoOrMore")
   model_res[[nm]] <- tmp
 }
-saveRDS(object = model_res, file = 'raw_model_output.RData')
 
-# Printable results
+# Output ----
+cat('Writing out results ....', '\n')
+saveRDS(object = model_res, file = file.path('results',
+                                             'raw_model_output.RData'))
 printable_res <- data.frame(scenario = names(model_res), loglikelihood =
                               extract_slot(model_res = model_res,
                                            slt_nm = 'loglikelihood'),
@@ -41,5 +42,6 @@ printable_res <- data.frame(scenario = names(model_res), loglikelihood =
 rownames(printable_res) <- NULL
 # add weighted AIC
 printable_res <- aicw_calc(printable_res)
-write.csv(x = printable_res, file = 'model_results_no_bonus.csv',
-          row.names = FALSE, quote = FALSE)
+write.csv(x = printable_res, row.names = FALSE, quote = FALSE,
+          file = file.path('results', 'model_results_no_bonus.csv'))
+cat('Done!\n')
