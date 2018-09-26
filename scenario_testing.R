@@ -34,6 +34,7 @@ for (nm in names(trstrs)) {
 cat('Writing out results ....', '\n')
 saveRDS(object = model_res, file = file.path('results',
                                              'raw_model_output.RData'))
+# model_res <- readRDS(file = file.path('results', 'raw_model_output.RData'))
 printable_res <- data.frame(scenario = names(model_res), loglikelihood =
                               extract_slot(model_res = model_res,
                                            slt_nm = 'loglikelihood'),
@@ -44,10 +45,4 @@ rownames(printable_res) <- NULL
 printable_res <- aicw_calc(printable_res)
 write.csv(x = printable_res, row.names = FALSE, quote = FALSE,
           file = file.path('results', 'model_results.csv'))
-# drop s4
-printable_res <- printable_res[printable_res[['scenario']] != 's4', ]
-printable_res <- printable_res[ ,1:3]
-printable_res <- aicw_calc(printable_res)
-write.csv(x = printable_res, row.names = FALSE, quote = FALSE,
-          file = file.path('results', 'model_results_no_s4.csv'))
 cat('Done!\n')
