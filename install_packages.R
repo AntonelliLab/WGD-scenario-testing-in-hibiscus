@@ -4,3 +4,6 @@ install.packages("https://cran.r-project.org/src/contrib/Archive/phyext/phyext_0
                  repos = NULL, type = "source")
 install.packages("http://www.stat.wisc.edu/~ane/wgd/WGDgc_1.2.tar.gz",
                  repos = NULL, type = "source")
+# NOTE: might require manual download
+# install.packages('[path to downloads]/WGDgc_1.2.tar.gz',
+#                  repos = NULL, type = "source")
